@@ -799,6 +799,20 @@ void InsertFirst(SingleList &list, int data) {
 	}
 }
 
+void InsertLast(SingleList &list, int data) {
+	Node *pNode = CreateNode(data);
+	
+	if(list.pHead == NULL) {
+		list.pHead = pNode;
+	}else {
+		Node *tmpNode = list.pHead;
+		while(tmpNode->pNext != NULL) {
+			tmpNode = tmpNode->pNext; 
+		}
+		tmpNode->pNext = pNode;
+	}
+}
+
 int main(int argc, char** argv) {
 	SingleList list;
 	Initialize(list);
@@ -806,6 +820,7 @@ int main(int argc, char** argv) {
 	InsertFirst(list, 213);
 	InsertFirst(list, 354);
 	InsertFirst(list, 1);
+	InsertLast(list, 19);
 	PrintList(list);
 	return 0;
 }
