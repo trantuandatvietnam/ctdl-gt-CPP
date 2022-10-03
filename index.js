@@ -23,7 +23,10 @@ function solutionHere(quantity) {
   for (let i = 1; i <= quantity - 1; i++) {
     result = multipleTwoRow(result, baseArrElv);
   }
-  return Number(result);
+  return result;
 }
 
-console.log(solutionHere(91));
+const start = Date.now();
+console.log(solutionHere(10000));
+const end = Date.now();
+console.log("Time", (end - start) / 1000);

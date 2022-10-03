@@ -801,15 +801,41 @@ void InsertFirst(SingleList &list, int data) {
 
 void InsertLast(SingleList &list, int data) {
 	Node *pNode = CreateNode(data);
-	
+
 	if(list.pHead == NULL) {
 		list.pHead = pNode;
 	}else {
 		Node *tmpNode = list.pHead;
 		while(tmpNode->pNext != NULL) {
-			tmpNode = tmpNode->pNext; 
+			tmpNode = tmpNode->pNext;
 		}
 		tmpNode->pNext = pNode;
+	}
+}
+
+void InsertMid(SingleList &list, int position, int data) {
+	if(position < 0 || position > SizeOfList(list) - 1) {
+		cout << "Vi tri chen khong hop le!";
+		return;
+	}else if(position == 0) {
+		InsertFirst(list, data);
+	}else if(position == SizeOfList(list) - 1) {
+		InsertLast(list, data);
+	}else {
+		Node *newNode = CreateNode(data);
+		Node *tmpNode = list.pHead;
+		Node *prevNode = NULL;
+		int i = 0;
+		while(tmpNode != NULL) {
+			if(i == position) {
+				break;
+			}
+			prevNode = tmpNode;
+			tmpNode = tmpNode->pNext;
+			i++;
+		}
+		prevNode->pNext = newNode;
+		newNode->pNext = tmpNode;
 	}
 }
 
@@ -821,6 +847,7 @@ int main(int argc, char** argv) {
 	InsertFirst(list, 354);
 	InsertFirst(list, 1);
 	InsertLast(list, 19);
+	InsertMid(list, 0, 45);
 	PrintList(list);
 	return 0;
 }
