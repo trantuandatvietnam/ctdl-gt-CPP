@@ -839,6 +839,39 @@ void InsertMid(SingleList &list, int position, int data) {
 	}
 }
 
+void deleteNode(SingleList &list, int position) {
+	int index = 0;
+	Node *nodeDel = NULL;
+	Node *prevNode = list.pHead;
+
+	if(position < 0 || position > SizeOfList(list) - 1) {
+		cout << "position is invalid, not a node is deleted\n";
+		return;
+	}
+
+	if(list.pHead == NULL) {
+		cout << "The list is empty\n";
+		return;
+	}
+
+	if(position == 0) {
+		list.pHead = prevNode->pNext;
+		delete prevNode;
+		prevNode = NULL;
+		return;
+	}
+
+	while(index < position - 1) {
+		prevNode = prevNode->pNext;
+		index++;
+	}
+
+	nodeDel = prevNode->pNext;
+	prevNode->pNext = nodeDel->pNext;
+	delete nodeDel;
+	nodeDel = NULL;
+}
+
 int main(int argc, char** argv) {
 	SingleList list;
 	Initialize(list);
