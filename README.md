@@ -839,6 +839,7 @@ void InsertMid(SingleList &list, int position, int data) {
 	}
 }
 
+//Remove by position
 void deleteNode(SingleList &list, int position) {
 	int index = 0;
 	Node *nodeDel = NULL;
@@ -872,16 +873,510 @@ void deleteNode(SingleList &list, int position) {
 	nodeDel = NULL;
 }
 
+//Remove by data
+void removeNode(SingleList &list, int data) {
+	Node *nodeDel = list.pHead;
+	if(nodeDel == NULL) {
+		cout << "Danh sach rong!\n";
+	}else {
+		Node *prevNode = NULL;
+		while(nodeDel != NULL) {
+			if(nodeDel->data == data) {
+				break;
+			}
+			prevNode = nodeDel;
+			nodeDel=nodeDel->pNext;
+		}
+		if(nodeDel == NULL) {
+			cout << "Khong tim thay gia tri" << endl;
+		}else {
+			if(nodeDel == list.pHead) {
+				list.pHead = list.pHead->pNext;
+				nodeDel->pNext = NULL;
+				delete nodeDel;
+				nodeDel = NULL;
+			}else {
+				prevNode->pNext = nodeDel->pNext;
+				nodeDel->pNext = NULL;
+				delete nodeDel;
+				nodeDel = NULL;
+			}
+		}
+	}
+}
+
+Node * SearchNode(SingleList list, int data) {
+	Node *tmpNode = list.pHead;
+	while(tmpNode != NULL) {
+		if(tmpNode->data == data) {
+			break;
+		}
+		tmpNode = tmpNode->pNext;
+	}
+	return tmpNode;
+}
+
+void SortList(SingleList list) {
+	for(Node *tmpNode = list.pHead; tmpNode != NULL; tmpNode=tmpNode->pNext) {
+		for(Node *tmpNode2 = tmpNode->pNext; tmpNode2 != NULL; tmpNode2=tmpNode2->pNext) {
+			if(tmpNode->data > tmpNode2->data) {
+				int tmp = tmpNode->data;
+				tmpNode->data = tmpNode2->data;
+				tmpNode2->data = tmp;
+			}
+		}
+	}
+}
+
+void FreeList(SingleList &list) {
+	while(list.pHead != NULL) {
+		Node *tmpNode = list.pHead;
+		list.pHead = tmpNode->pNext;
+		tmpNode->pNext = NULL;
+		delete tmpNode;
+		tmpNode = NULL;
+	}
+	cout << "\nda giai phong bo nho" << endl;
+}
+
 int main(int argc, char** argv) {
 	SingleList list;
 	Initialize(list);
 	InsertFirst(list, 12);
-	InsertFirst(list, 213);
-	InsertFirst(list, 354);
-	InsertFirst(list, 1);
-	InsertLast(list, 19);
-	InsertMid(list, 0, 45);
+	InsertLast(list, 213);
+	InsertLast(list, 23);
+	InsertLast(list, 123);
+	InsertLast(list, 1);
+	SortList(list);
+	PrintList(list);
+	FreeList(list);
 	PrintList(list);
 	return 0;
 }
 ```
+
+- Lưu ý: C và C++ không tự động thu hồi bộ nhớ khi sử dụng từ khóa new, ... Thế nên cần giải phóng nó khi kết thúc chương trình
+
+- Cách khác sử dụng con trỏ để tạo danh sách liên Kết
+
+```js
+#include <iostream>
+using namespace std;
+
+struct Node {
+	int data;
+	Node *pNext;
+};
+
+struct SingleList {
+	Node *pHead;
+};
+
+void Initialize(SingleList *&list) {
+	list = new SingleList;
+	list->pHead = NULL;
+}
+
+Node *CreateNode(float data) {
+	Node *newNode = new Node;
+	if(newNode != NULL) {
+		newNode->data = data;
+		newNode->pNext = NULL;
+	}else {
+		cout << "Khoi tao node moi that bai";
+	}
+	return newNode;
+
+}
+
+void PrintList(SingleList *list) {
+	Node *tmpNode = list->pHead;
+	if(tmpNode == NULL) {
+		cout << "danh sach trong";
+		return;
+	}
+	while(tmpNode != NULL) {
+		cout << tmpNode->data << "\t";
+		tmpNode = tmpNode->pNext;
+	}
+}
+
+int SizeOfList(SingleList *list) {
+	Node *tmpNode = list->pHead;
+	int count = 0;
+	while(tmpNode != NULL) {
+		tmpNode = tmpNode->pNext;
+		count++;
+	}
+	return count;
+}
+
+void InsertFirst(SingleList *&list, float data) {
+	Node *newNode = CreateNode(data);
+	if(list->pHead == NULL) {
+		list->pHead = newNode;
+		return;
+	}
+
+	newNode->pNext = list->pHead;
+	list->pHead = newNode;
+
+}
+
+void InsertLast(SingleList *&list, float data) {
+	Node *newNode = CreateNode(data);
+	if(list->pHead == NULL) {
+		list->pHead = newNode;
+		return;
+	}
+
+ 	Node *lastNode = list->pHead;
+	while(lastNode->pNext != NULL) {
+		lastNode = lastNode->pNext;
+	}
+	lastNode->pNext = newNode;
+}
+
+void InsertByPosition(SingleList *&list, float data, int position) {
+	int sizeList = SizeOfList(list);
+	if(position < 0  || position > sizeList) {
+		cout << "vi tri chen khong hop le";
+		return;
+	}
+
+	if(position == 0) {
+		InsertFirst(list, data);
+		return;
+	}
+
+	if(position == sizeList - 1) {
+		InsertLast(list, data);
+		return;
+	}
+
+	Node *prevNode = NULL;
+	Node *newNode = CreateNode(data);
+	Node *insNode = list->pHead;
+	int index = 0;
+	while(insNode != NULL) {
+		if(position == index) {
+			break;
+		}
+		prevNode = insNode;
+		insNode = insNode->pNext;
+		index++;
+	}
+	newNode->pNext = insNode;
+	prevNode->pNext = newNode;
+
+}
+
+int main(int argc, char** argv) {
+	SingleList *list;
+	Initialize(list);
+	InsertLast(list, 100);
+	InsertLast(list, 200);
+	InsertLast(list, 300);
+	InsertByPosition(list, 1200, 1);
+	PrintList(list);
+	return 0;
+}
+```
+
+### Bài tập tự luyện con trỏ
+
+- Cho một sinh viên có cấu trúc: mã (int), tên (char\*). Dùng danh sách liên kết đơn với con trỏ phead để thao tác
+
+1. Khởi tạo list dạng con trỏ
+2. Thêm node vào cuối danh sách
+3. Sắp xếp theo mã
+4. Xóa node
+
+```js
+#include<iostream>
+#include<string.h>
+#include<stdio.h>
+using namespace std;
+
+struct SinhVien{
+	int ma;
+	char ten[150];
+};
+
+struct Node {
+	SinhVien *data;
+	Node *pNext;
+};
+
+struct SingleList {
+	Node *pHead;
+};
+
+void InitializeList(SingleList *&list) {
+	list = new SingleList;
+	list->pHead = NULL;
+}
+
+Node *CreateNode(SinhVien *sv) {
+	Node *pNode = new Node;
+	if(pNode != NULL) {
+		pNode->data = sv;
+		pNode->pNext = NULL;
+	}else {
+		cout << "cap phat bo nho that bai";
+	}
+	return pNode;
+}
+
+SinhVien *NhapSinhVien() {
+	SinhVien *sv = new SinhVien;
+	cout << "Ma: ";
+	cin >> sv->ma;
+	cin.ignore();
+	cout << "Ten: ";
+	gets(sv->ten);
+	return sv;
+}
+
+void InsertLast(SingleList *&list, SinhVien *sv) {
+	Node *pNode = CreateNode(sv);
+	if(list->pHead == NULL) {
+		list->pHead = pNode;
+	}else {
+		Node *pTmp = list->pHead;
+		while(pTmp->pNext != NULL) {
+			pTmp = pTmp->pNext;
+		}
+		pTmp->pNext = pNode;
+	}
+}
+
+void PrintList(SingleList *list) {
+	Node *pTmp = list->pHead;
+	if(pTmp == NULL) {
+		cout << "Danh sach rong";
+		return;
+	}
+
+	while(pTmp != NULL) {
+		SinhVien *sv = pTmp->data;
+		cout << sv->ma << "\t" << sv->ten << "\n";
+		pTmp = pTmp->pNext;
+	}
+}
+
+void SortList(SingleList *&list) {
+	for(Node *pTmp = list->pHead; pTmp != NULL; pTmp = pTmp->pNext) {
+		for(Node *pTmp2 = pTmp->pNext; pTmp2 != NULL; pTmp2 = pTmp2->pNext) {
+			SinhVien *svTmp = pTmp->data;
+			SinhVien *svTmp2 = pTmp2->data;
+			if(svTmp->ma > svTmp2->ma) {
+				int ma = svTmp->ma;
+				char ten[150];
+				strcpy(ten, svTmp->ten);
+
+				svTmp->ma = svTmp2->ma;
+				strcpy(svTmp->ten, svTmp2->ten);
+				svTmp2->ma = ma;
+				strcpy(svTmp2->ten, ten);
+
+			}
+		}
+	}
+}
+
+void RemoveNode(SingleList *&list, int ma) {
+	Node *pDel = list->pHead;
+	if(pDel == NULL) {
+		cout << "Danh sach rong";
+	}else {
+		Node *pPrev = NULL;
+		while(pDel != NULL) {
+			SinhVien *sv = pDel->data;
+			if(sv->ma == ma ) {
+				break;
+			}
+			pPrev = pDel;
+			pDel = pDel->pNext;
+		}
+		if(pDel == NULL) {
+			cout << "Khong thay ma sinh vien" << ma;
+		}else {
+			if(pDel == list->pHead) {
+				list->pHead = list->pHead->pNext;
+				pDel->pNext = NULL;
+				delete pDel;
+				pDel = NULL;
+			}else {
+				pPrev->pNext = pDel->pNext;
+				pDel->pNext=NULL;
+				delete pDel;
+				pDel = NULL;
+			}
+		}
+	}
+}
+
+int main(int argc, char ** argv) {
+	SingleList *list;
+	InitializeList(list);
+	SinhVien *teo = NhapSinhVien();
+	InsertLast(list, teo);
+	SinhVien *ty = NhapSinhVien();
+	InsertLast(list, ty);
+	PrintList(list);
+	return 0;
+}
+
+using namespace std;
+```
+
+### Danh sách liên kết đơn với PTail
+
+```js
+#include<iostream>
+using namespace std;
+
+struct Node {
+	int data;
+	Node *pNext;
+};
+
+struct SingleList {
+	Node *pHead;
+	Node *pTail;
+};
+
+void Initialize(SingleList &list) {
+	list.pHead = list.pTail = NULL;
+}
+
+Node *CreateNode(int data) {
+	Node *newNode = new Node;
+	if(newNode == NULL) {
+		cout << "cap phat bo nho that bai" << "\n";
+	}else {
+		newNode->data = data;
+		newNode->pNext = NULL;
+	}
+	return newNode;
+}
+
+void PrinList(SingleList list) {
+	Node *tmpNode = list.pHead;
+	if(tmpNode == NULL) {
+		cout << "danh sach rong" << endl;
+	}else {
+		while(tmpNode != NULL) {
+			cout << tmpNode->data << "\t";
+			tmpNode = tmpNode->pNext;
+		}
+	}
+}
+
+int SizeOfList(SingleList list) {
+	Node *tmpNode = list.pHead;
+	int count = 0;
+	while(tmpNode != NULL) {
+		count ++;
+		tmpNode = tmpNode->pNext;
+	}
+	return count;
+}
+
+void InsertFirst(SingleList &list, int data) {
+	Node *newNode = CreateNode(data);
+	if(list.pHead == NULL) {
+		list.pHead = list.pTail = newNode;
+		return;
+	}
+	newNode->pNext = list.pHead;
+	list.pHead = newNode;
+}
+
+void InsertLast(SingleList &list, int data) {
+	Node *newNode = CreateNode(data);
+	if(list.pTail == NULL) {
+		list.pHead = list.pTail = newNode;
+		return;
+	}
+	list.pTail->pNext = newNode;
+	list.pTail = newNode;
+}
+
+void RemoveNode(SingleList &list, int data) {
+	Node *pDel = list.pHead;
+	if(pDel == NULL) {
+		cout << "The list is empty";
+	}else {
+		Node *pPre = NULL;
+
+		while(pDel != NULL) {
+			if(pDel->data == data) {
+				break;
+			}
+			pPre = pDel;
+			pDel = pDel->pNext;
+		}
+
+		if(pDel == NULL) {
+			cout << "Could not found number!";
+		}else {
+			if(pDel == list.pHead) {
+				list.pHead = list.pHead->pNext;
+				pDel->pNext = NULL;
+				delete pDel;
+				pDel = NULL;
+			}else if(pDel->pNext == NULL) {
+				list.pTail = pPre;
+				pPre->pNext = NULL;
+				delete pDel;
+				pDel = NULL;
+			}else {
+				pPre->pNext = pDel->pNext;
+				pDel->pNext = NULL;
+				delete pDel;
+				pDel = NULL;
+			}
+		}
+	}
+}
+
+int main(int argc, char **argv) {
+	SingleList list;
+	Initialize(list);
+	InsertLast(list, 7);
+	InsertLast(list, 10);
+	InsertLast(list, 20);
+	InsertLast(list, 15);
+	InsertLast(list, 16);
+	RemoveNode(list, 20);
+	PrinList(list);
+	return 0;
+}
+```
+
+# Tree trong cấu trúc dữ liệu và giải thuật
+
+### Binary Tree (Cây nhị phân)
+
+A. Các phép duyệt cây: 1. Duyệt theo thứ tự trước: PreOder(N - L - R) 2. Duyệt theo thứ tự giữa: InOder(L - N - R) 3. Duyệt theo thứ tự sau: PostOrder(L - R - N)
+
+B. Tính chất của cây nhị phân
+
+- Số node tối đa tại level `l` là 2^l
+- Số lượng node tối đa trong một cây nhị phân có chiều cao `h` là `2^h - 1`
+  - Chiều cao của cây là số node tối đa từ gốc tới lá
+- Trong một cây nhị phân với N node, chiều cao tối thiếu hoặc level là `log2(N+1)`
+
+- Một cây có L lá sẽ có ít nhất `Log2L + 1` levels
+
+C. Phân loại cây nhị phân
+
+1. Full Binary Tree (Cây nhị phân đầy đủ)
+
+- Nếu mọi node của cây đều có 0 hoặc 2 con
+- Chúng ta có thể nói rằng cây nhị phân đầy đủ là cây có tất cả các node đều có 2 node con (Trừ các node lá)
+
+2. Complete Binary Tree
+   ... Còn nhiều lắm, lên google để tìm hiểu thêm
