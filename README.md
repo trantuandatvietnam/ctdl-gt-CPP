@@ -1397,12 +1397,12 @@ C. Phân loại cây nhị phân
 using namespace std;
 
 struct Node {
-	int data;
+	char data;
 	Node *pRight;
 	Node *pLeft;
 };
 
-Node *CreateNode(int data) {
+Node *CreateNode(char data) {
 	Node *newNode = new Node();
 	if(!newNode) {
 		cout << "Memory Err\n";
@@ -1431,26 +1431,28 @@ void traverseInOrder(Node *temp) {
 
 void traversePostOrder(Node *temp) {
 	if(temp != NULL) {
-		traverseInOrder(temp->pLeft);
-    	traverseInOrder(temp->pRight);
+		traversePostOrder(temp->pLeft);
+    	traversePostOrder(temp->pRight);
     	cout << " " << temp->data;
 	}
 }
 
 
 int main() {
-	Node *root = CreateNode(1);
-  	root->pLeft = CreateNode(2);
-  	root->pRight = CreateNode(3);
-  	root->pLeft->pLeft = CreateNode(5);
-  	root->pLeft->pRight = CreateNode(6);
-  	root->pRight->pLeft = CreateNode(7);
-  	root->pRight->pRight = CreateNode(8);
+	Node *root = CreateNode('A');
+  	root->pLeft = CreateNode('C');
+  	root->pLeft->pLeft = CreateNode('G');
+  	root->pLeft->pRight = CreateNode('F');
+  	root->pLeft->pLeft->pRight = CreateNode('I');
+  	root->pRight = CreateNode('B');
+  	root->pRight->pRight = CreateNode('D');
+  	root->pRight->pLeft = CreateNode('E');
+  	root->pRight->pRight->pLeft = CreateNode('H');
   	cout << "preOrder traversal: ";
   	traversePreOrder(root);
   	cout << "\ninOrder traversal: ";
   	traverseInOrder(root);
   	cout << "\npostOrder traversal: ";
-  	traverseInOrder(root);
+  	traversePostOrder(root);
 }
 ```
