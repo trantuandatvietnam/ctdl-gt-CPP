@@ -1360,7 +1360,17 @@ int main(int argc, char **argv) {
 
 ### Binary Tree (Cây nhị phân)
 
-A. Các phép duyệt cây: 1. Duyệt theo thứ tự trước: PreOder(N - L - R) 2. Duyệt theo thứ tự giữa: InOder(L - N - R) 3. Duyệt theo thứ tự sau: PostOrder(L - R - N)
+A. Các phép duyệt cây:
+
+1. Duyệt theo thứ tự trước: PreOder(N - L - R)
+
+2. Duyệt theo thứ tự giữa: InOder(L - N - R)
+
+3. Duyệt theo thứ tự sau: PostOrder(L - R - N)
+
+- Để nhớ thứ tự này có phương pháp sau
+  - Tên của các phép duyệt cây chính là thứ tự của N
+  - L luôn đứng trước R
 
 B. Tính chất của cây nhị phân
 
@@ -1380,3 +1390,67 @@ C. Phân loại cây nhị phân
 
 2. Complete Binary Tree
    ... Còn nhiều lắm, lên google để tìm hiểu thêm
+
+```cpp
+#include<iostream>
+
+using namespace std;
+
+struct Node {
+	int data;
+	Node *pRight;
+	Node *pLeft;
+};
+
+Node *CreateNode(int data) {
+	Node *newNode = new Node();
+	if(!newNode) {
+		cout << "Memory Err\n";
+		return NULL;
+	}
+	newNode->data = data;
+	newNode->pLeft = newNode->pRight = NULL;
+	return newNode;
+}
+
+void traversePreOrder(Node *temp) {
+  if (temp != NULL) {
+    cout << " " << temp->data;
+    traversePreOrder(temp->pLeft);
+    traversePreOrder(temp->pRight);
+  }
+}
+
+void traverseInOrder(Node *temp) {
+	if(temp != NULL) {
+		traverseInOrder(temp->pLeft);
+		cout << " " << temp->data;
+    	traverseInOrder(temp->pRight);
+	}
+}
+
+void traversePostOrder(Node *temp) {
+	if(temp != NULL) {
+		traverseInOrder(temp->pLeft);
+    	traverseInOrder(temp->pRight);
+    	cout << " " << temp->data;
+	}
+}
+
+
+int main() {
+	Node *root = CreateNode(1);
+  	root->pLeft = CreateNode(2);
+  	root->pRight = CreateNode(3);
+  	root->pLeft->pLeft = CreateNode(5);
+  	root->pLeft->pRight = CreateNode(6);
+  	root->pRight->pLeft = CreateNode(7);
+  	root->pRight->pRight = CreateNode(8);
+  	cout << "preOrder traversal: ";
+  	traversePreOrder(root);
+  	cout << "\ninOrder traversal: ";
+  	traverseInOrder(root);
+  	cout << "\npostOrder traversal: ";
+  	traverseInOrder(root);
+}
+```
